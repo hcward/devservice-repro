@@ -1,0 +1,38 @@
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./devservice-test:/workspace:z
+    environment:
+      - DOCKER_HOST=tcp://podman:2375
+      - TESTCONTAINERS_HOST_OVERRIDE=tcp://podman:2375
+      - TESTCONTAINERS_RYUK_DISABLED=true
+    tty: true
+    stdin_open: true
+    depends_on:
+      - podman
+
+  podman:
+    image: quay.io/podman/stable
+    user: podman
+    command: podman system service --time=0 tcp:0.0.0.0:2375
+    expose:
+      - "2375"
+    volumes:
+      - podman-data:/home/podman/.local/share/containers:z
+    cap_add:
+      - SYS_ADMIN
+      - SETUID
+      - SETGID
+      - SYS_CHROOT
+    security_opt:
+      - seccomp=unconfined
+      - label=disable
+      - apparmor=unconfined
+    devices:
+      - /dev/fuse
+
+volumes:
+  podman-data:
