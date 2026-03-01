@@ -4,6 +4,5 @@ Quick reproduction to show issues with Quarkus DevServices when Podman is runnin
 
 ## Reproduction Steps
 
-1. docker compose up -d
-2. docker compose exec ${dev-container-name} /bin/bash
-3. mvn quarkus:dev
+1. podman compose up -d
+2. podman exec -it devservice-repro-dev-1 mvn quarkus:dev
